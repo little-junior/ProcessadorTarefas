@@ -1,17 +1,5 @@
-﻿using static ProcessadorTarefas.Entidades.Tarefa;
-
-namespace ProcessadorTarefas.Entidades
+﻿namespace ProcessadorTarefas.Entidades
 {
-    public interface ITarefa
-    {
-        int Id { get; }
-        EstadoTarefa Estado { get; }
-        DateTime IniciadaEm { get; }
-        DateTime EncerradaEm { get; }
-        IEnumerable<Subtarefa> SubtarefasPendentes { get; }
-        IEnumerable<Subtarefa> SubtarefasExecutadas { get; }
-    }
-
     public class Tarefa : ITarefa
     {
         public int Id { get; set; }
