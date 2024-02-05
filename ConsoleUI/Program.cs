@@ -1,4 +1,4 @@
-﻿namespace SOLID_Example
+﻿namespace ConsoleUI
 {
     internal class Program
     {
