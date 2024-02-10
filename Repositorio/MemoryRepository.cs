@@ -9,16 +9,16 @@ namespace ProcessadorTarefas.Repositorios
 {
     public class MemoryRepository : IRepository<Tarefa>
     {
-        private readonly Queue<Tarefa> _tarefas;
+        private readonly List<Tarefa> _tarefas;
 
         public MemoryRepository(int maxSubTarefas)
         {
-            _tarefas = new Queue<Tarefa>(GenerateTarefas(maxSubTarefas)) {};
+            _tarefas = new List<Tarefa>(GenerateTarefas(maxSubTarefas)) {};
         }
 
         public void Add(Tarefa entity)
         {
-            _tarefas.Enqueue(entity);
+            _tarefas.Insert(0, entity);
         }
 
         public IEnumerable<Tarefa> GetAll()
