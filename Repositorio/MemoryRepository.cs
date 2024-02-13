@@ -18,7 +18,12 @@ namespace ProcessadorTarefas.Repositorios
 
         public void Add(Tarefa entity)
         {
-            _tarefas.Insert(0, entity);
+            _tarefas.Add(entity);
+        }
+
+        public void Delete(Tarefa entity)
+        {
+            _tarefas.Remove(entity);
         }
 
         public IEnumerable<Tarefa> GetAll()

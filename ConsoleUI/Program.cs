@@ -2,58 +2,47 @@
 using System.Configuration;
 using ProcessadorTarefas.Entidades;
 using ProcessadorTarefas.Repositorios;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using ProcessadorTarefas.Servicos;
 
 namespace ConsoleUI
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-
-            var settings = ConfigurationManager.AppSettings;
-            var maxSubtarefasCheck = int.TryParse(settings["MaxSubtarefas"], out int maxSubtarefas);
-            var maxTarefasEmExecCheck = int.TryParse(settings["MaxTarefasEmExec"], out int maxTarefasEmExec);
-
-            var repositorio = new MemoryRepository(maxSubtarefas);
-            while (true)
-            {
-                Console.Clear();
-
-                Menu();
-
-                var escolha = Console.ReadLine();
-
-                Console.Clear();
-
-                switch (escolha)
-                {
-                    case "3":
-                        ListarTarefas(repositorio);
-                        Console.ReadKey();
-                        continue;
-                    case "0":
-                        Environment.Exit(0);
-                        break;
-                    default:
-                        continue;
-                }
-            }
-
+            Menu();
+            
 
         }
+
+        //private static IServiceProvider ConfigureServiceProvider()
+        //{
+
+        //    IConfiguration configuration = new ConfigurationBuilder().SetBasePath();
+
+
+        //    IServiceCollection services = new ServiceCollection();
+        //    services.AddScoped(_ => configuration);
+        //    services.AddScoped<IRepository<Tarefa>, MemoryRepository>();
+        //    services.AddSingleton<IProcessadorTarefas, Processador>();
+        //    services.AddScoped<IGerenciadorTarefas, Gerenciador>(serviceProvider =>
+        //    {
+        //        var repository = serviceProvider.GetService<IRepository<Tarefa>>();
+        //        return new Gerenciador(repository, serviceProvider, configuration);
+        //    });
+
+        //    return services.BuildServiceProvider();
+        //}
 
         static void Menu()
         {
-            Console.WriteLine($"1 -> Criar Tarefa\n2 -> Cancelar Tarefa\n3 -> Listar Tarefas\n0 -> Sair\n");
+            Console.WriteLine("SELECIONE UMA DAS OPÇÕES ABAIXO");
+            Console.WriteLine($"\n1 -> CRIAR TAREFA\n2 -> CANCELAR TAREFA\n3 -> LISTAR TAREFAS ATIVAS\n4 -> LISTAR TAREFAS INATIVAS\n5 -> PAUSAR PROCESSAMENTO\n0 -> SAIR\n");
         }
 
-        static void ListarTarefas(IRepository<Tarefa> repositorio)
-        {
-            foreach (var item in repositorio.GetAll())
-            {
-                Console.WriteLine(item);
-            }
-        }
+        
 
     }
 }
