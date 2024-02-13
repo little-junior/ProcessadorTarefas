@@ -22,3 +22,10 @@
     1. Quantidade de tarefas que podem ser executadas por vez.
     2. Quantidade máxima de subtarefas que cada tarefa pode receber.
 
+## 📖 Conceitos Abordados
+
+- Generics
+- Injeção de Dependência
+- Configuração por via da interface IConfiguration
+- Assincronismo
+
