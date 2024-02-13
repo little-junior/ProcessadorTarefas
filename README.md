@@ -1,6 +1,6 @@
 # Processador de Tarefas
 
-**Sistema autônomo de execução de tarefas desenvolvido em .NET 8.0**
+**Sistema autônomo de execução de tarefas desenvolvido no .NET 8.0**
 
 ## 🎯 Objetivos
 
@@ -16,7 +16,9 @@
 - Injeção de dependência para repositórios e possível serviços.
 - Execução de tarefas deve ser assíncrona.
 - A implementação do repositório deve usar Generics.
-- A máquina de estado de uma tarefa deve ser a seguinte:
+- A máquina de estado de uma tarefa deve seguir o seguinte padrão:
+
+![image](https://github.com/little-junior/ProcessadorTarefas/assets/126090805/88af5780-80fa-47ab-bdb3-34f333bfc92d)
 
 - Permitir configurar:
     1. Quantidade de tarefas que podem ser executadas por vez.
