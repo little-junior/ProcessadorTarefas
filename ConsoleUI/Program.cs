@@ -14,6 +14,10 @@ namespace ConsoleUI
         {
             var serviceProvider = ConfigureServiceProvider();
 
+            var configuration = serviceProvider.GetService<IConfiguration>();
+
+            ConfigurationsValidation(configuration);
+
             var processador = serviceProvider.GetService<IProcessadorTarefas>();
             var gerenciador = serviceProvider.GetService<IGerenciadorTarefas>();
 
@@ -28,7 +32,7 @@ namespace ConsoleUI
                 await Task.Delay(100);
             }
 
-            
+
 
         }
 
@@ -54,13 +58,27 @@ namespace ConsoleUI
             return services.BuildServiceProvider();
         }
 
-        static void Menu()
+        private static void ConfigurationsValidation(IConfiguration configurations)
         {
-            Console.WriteLine("SELECIONE UMA DAS OPÇÕES ABAIXO");
-            Console.WriteLine($"\n1 -> CRIAR TAREFA\n2 -> CANCELAR TAREFA\n3 -> LISTAR TAREFAS ATIVAS\n4 -> LISTAR TAREFAS INATIVAS\n5 -> PAUSAR PROCESSAMENTO\n0 -> SAIR\n");
-        }
+            try
+            {
+                var firstValidation = int.TryParse(configurations["maxSubtarefas"], out int _);
+                var secondValidation = int.TryParse(configurations["maxTarefasEmExecucao"], out int _);
 
-        
+
+                if (!firstValidation || !secondValidation)
+                {
+                    throw new ConfigurationErrorsException("Os campos do arquivo de configuração estão incorretos. Tente novamente");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Um erro ocorreu\n");
+                Console.WriteLine($"\"{ex.Message}\"");
+                Environment.Exit(0);
+            }
+
+        }
 
     }
 }
