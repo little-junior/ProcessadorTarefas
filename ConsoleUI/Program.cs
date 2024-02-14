@@ -25,7 +25,7 @@ namespace ConsoleUI
 
             while (true)
             {
-                Menu();
+                Menu.ImprimirOpcoes();
 
                 Console.Clear();
 
@@ -62,18 +62,28 @@ namespace ConsoleUI
         {
             try
             {
-                var firstValidation = int.TryParse(configurations["maxSubtarefas"], out int _);
-                var secondValidation = int.TryParse(configurations["maxTarefasEmExecucao"], out int _);
+                var firstValidation = int.TryParse(configurations["maxSubtarefas"], out int maxSubtarefas);
+                var secondValidation = int.TryParse(configurations["maxTarefasEmExecucao"], out int maxTarefasEmExecucao);
 
 
                 if (!firstValidation || !secondValidation)
                 {
                     throw new ConfigurationErrorsException("Os campos do arquivo de configuração estão incorretos. Tente novamente");
                 }
+
+                if (maxSubtarefas < 10 || maxSubtarefas > 100)
+                {
+                    throw new ConfigurationErrorsException("O campo 'maxSubtarefas' deve ser um número entre 10 e 100");
+                }
+
+                if (maxTarefasEmExecucao <= 0)
+                {
+                    throw new ConfigurationErrorsException("O campo 'maxTarefasEmExecucao' deve ser um número maior do que 0");
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Um erro ocorreu\n");
+                Console.WriteLine("Um erro ocorreu:\n");
                 Console.WriteLine($"\"{ex.Message}\"");
                 Environment.Exit(0);
             }
