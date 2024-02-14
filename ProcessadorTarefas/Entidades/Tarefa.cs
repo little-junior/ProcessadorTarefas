@@ -2,6 +2,7 @@
 {
     public class Tarefa : ITarefa
     {
+        private static int _id = 0; 
         public int Id { get; set; }
         public EstadoTarefa Estado { get; set; }
         public DateTime IniciadaEm { get; set; }
@@ -11,7 +12,8 @@
 
         public Tarefa(int maxSubTarefas)
         {
-            Id = new Random().Next();
+            _id++;
+            Id = _id;
             Estado = EstadoTarefa.Criada;
             SubtarefasPendentes = GenerateSubTarefas(maxSubTarefas);
             SubtarefasExecutadas = new List<Subtarefa>();
@@ -29,8 +31,6 @@
         {
             return $"Tarefa {Id} | Estado: {Estado} | Iniciada em: {IniciadaEm} | Encerrada Em: {EncerradaEm} |  Pendentes: {SubtarefasPendentes.Count()} | Executadas: {SubtarefasExecutadas?.Count()}";
         }
-
-
 
         public void Agendar()
         {
