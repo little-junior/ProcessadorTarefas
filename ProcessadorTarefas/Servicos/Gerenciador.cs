@@ -42,14 +42,16 @@ namespace ProcessadorTarefas.Servicos
 
         public async Task<Tarefa> Criar()
         {
-            var tarefa = new Tarefa(100);
+            var maxSubtarefas = int.Parse(_configurations["maxSubtarefas"]!);
+            var tarefa = new Tarefa(maxSubtarefas);
             _tarefas.Add(tarefa);
             return await Task.FromResult(tarefa);
         }
 
         public async Task<IEnumerable<Tarefa>> ListarAtivas()
         {
-            return await Task.FromResult(_tarefas.GetAll().Where(t => t.Estado == EstadoTarefa.Agendada || t.Estado == EstadoTarefa.EmExecucao));
+            var tarefasAtivas = _tarefas.GetAll().Where(t => t.Estado == EstadoTarefa.Agendada || t.Estado == EstadoTarefa.EmExecucao || t.Estado == EstadoTarefa.Criada);
+            return await Task.FromResult(tarefasAtivas);
         }
 
         public async Task<IEnumerable<Tarefa>> ListarInativas()
