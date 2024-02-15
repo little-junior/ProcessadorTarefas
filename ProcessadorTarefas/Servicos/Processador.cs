@@ -66,13 +66,14 @@ namespace ProcessadorTarefas.Servicos
             }
         }
 
-        private void PopularAgendadas()
+        private async Task PopularAgendadas()
         {
             var num = 5;
-            var quantidadeDeAgendadas = _gerenciador.ListarAtivas().Result.Count(t => t.Estado == EstadoTarefa.Agendada);
-            if (quantidadeDeAgendadas < num)
+            var tarefaAtivas = await _gerenciador.ListarAtivas();
+            var quantidadeAgendadas = tarefaAtivas.Count(t => t.Estado == EstadoTarefa.Agendada);
+            if (quantidadeAgendadas < num)
             {
-                var tarefaAEspera = _gerenciador.ListarAtivas().Result.First(t => t.Estado == EstadoTarefa.Agendada);
+                var tarefaAEspera = _gerenciador.ListarAtivas().Result.First(t => t.Estado == EstadoTarefa.Criada);
                 tarefaAEspera.Agendar();
                 _agendadas.Enqueue(tarefaAEspera);
             }
