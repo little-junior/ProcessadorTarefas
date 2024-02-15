@@ -50,6 +50,9 @@ namespace ConsoleUI
                             action = UserInterface.ImprimirTarefasInativas;
                             break;
                         case '5':
+                            action = (gerenciador) => { };
+                            break;
+                        case '6':
                             break;
                         case '0':
                             UserInterface.ImprimirTelaSaida();
