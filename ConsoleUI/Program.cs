@@ -23,13 +23,61 @@ namespace ConsoleUI
 
             await processador!.Iniciar();
 
+            Action<IGerenciadorTarefas> action = (gerenciador) =>
+            {
+                return;
+            };
+
             while (true)
             {
-                Menu.ImprimirOpcoes();
+                if (Console.KeyAvailable)
+                {
+                    var option = Console.ReadKey(intercept: true).KeyChar;
+                    Console.WriteLine();
+                    switch (option)
+                    {
+                        case '1':
+                            var novaTarefa = await gerenciador.Criar();
+                            Console.WriteLine($"TAREFA {novaTarefa.Id} CRIADA!");
+                            await Task.Delay(1000);
+                            break;
+                        case '2':
+                            break;
+                        case '3':
+                            action = UserInterface.ImprimirTarefasAtivas;
+                            break;
+                        case '4':
+                            action = UserInterface.ImprimirTarefasInativas;
+                            break;
+                        case '5':
+                            break;
+                        case '0':
+                            UserInterface.ImprimirTelaSaida();
+                            await Task.Delay(2000);
+                            Environment.Exit(0);
+                            break;
+                        default:
+                            Console.WriteLine("OPÇÃO INVÁLIDA!");
+                            await Task.Delay(1000);
+                            break;
+                    }
+                }
+
 
                 Console.Clear();
 
-                await Task.Delay(100);
+                UserInterface.ImprimirOpcoes();
+
+                await Task.Run(() =>
+                {
+                    action(gerenciador);
+                });
+
+                UserInterface.ImprimirTarefasEmExecucao(gerenciador!);
+
+
+                await Task.Delay(200);
+
             }
 
 
