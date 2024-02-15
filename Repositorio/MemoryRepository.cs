@@ -1,4 +1,5 @@
-﻿using ProcessadorTarefas.Entidades;
+﻿using Microsoft.Extensions.Configuration;
+using ProcessadorTarefas.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +10,20 @@ namespace ProcessadorTarefas.Repositorios
 {
     public class MemoryRepository : IRepository<Tarefa>
     {
-        private readonly List<Tarefa> _tarefas;
+        private static List<Tarefa> _tarefas;
+        private readonly IConfiguration _configurations;
 
-        public MemoryRepository(int maxSubTarefas)
+        
+        public MemoryRepository(IConfiguration configurations)
         {
-            _tarefas = new List<Tarefa>(GenerateTarefas(maxSubTarefas)) {};
+            _configurations = configurations;
+            _ = int.TryParse(_configurations["maxSubtarefas"], out int num);
+            _tarefas = new List<Tarefa>(GenerateTarefas(num));
         }
 
         public void Add(Tarefa entity)
         {
-            _tarefas.Add(entity);
+            _tarefas = _tarefas.Prepend(entity).ToList();
         }
 
         public void Delete(Tarefa entity)
@@ -41,7 +46,7 @@ namespace ProcessadorTarefas.Repositorios
             throw new NotImplementedException();
         }
 
-        private IEnumerable<Tarefa> GenerateTarefas(int maxSubTarefas)
+        private static IEnumerable<Tarefa> GenerateTarefas(int maxSubTarefas)
         {
             return Enumerable.Range(1, 100).Select(index => new Tarefa(maxSubTarefas));
         }
