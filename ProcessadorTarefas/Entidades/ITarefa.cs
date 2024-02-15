@@ -14,5 +14,7 @@ namespace ProcessadorTarefas.Entidades
         DateTime EncerradaEm { get; }
         IEnumerable<Subtarefa> SubtarefasPendentes { get; }
         IEnumerable<Subtarefa> SubtarefasExecutadas { get; }
+        double DuracaoTotal { get; }
+        double DuracaoPercorrida { get; }
     }
 }
