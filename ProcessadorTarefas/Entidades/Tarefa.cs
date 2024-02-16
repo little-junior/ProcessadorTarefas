@@ -97,5 +97,19 @@ namespace ProcessadorTarefas.Entidades
 
             return duracaoTotal;
         }
+
+        public bool PodeSerCancelada()
+        {
+            if (Estado == EstadoTarefa.Criada)
+                return true;
+
+            if (Estado == EstadoTarefa.Agendada)
+                return true;
+
+            if (Estado == EstadoTarefa.EmExecucao) 
+                return true;
+
+            return false;
+        }
     }
 }
