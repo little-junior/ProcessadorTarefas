@@ -40,9 +40,17 @@ namespace ConsoleUI
                             break;
                         case '2':
                             Console.Write("DIGITE O ID DA TAREFA: ");
-                            var idTarefa = int.Parse(Console.ReadLine());
-                            await processador.CancelarTarefa(idTarefa);
-                            Console.WriteLine("TAREFA CANCELADA");
+                            var entradaValida = int.TryParse(Console.ReadLine(), out int entrada);
+
+                            if (!entradaValida)
+                            {
+                                Console.WriteLine("ENTRADA INVÁLIDA");
+                            }
+                            else 
+                            {
+                                await processador.CancelarTarefa(entrada);
+                                Console.WriteLine("TAREFA CANCELADA");
+                            }
                             await Task.Delay(1000);
                             break;
                         case '3':
