@@ -3,6 +3,7 @@ using ProcessadorTarefas.Entidades;
 using ProcessadorTarefas.Repositorios;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,22 +23,25 @@ namespace ProcessadorTarefas.Servicos
             _configurations = configurations;
         }
 
-        public Task Cancelar(int idTarefa)
+        public async Task Cancelar(int idTarefa)
         {
-            //var tarefa = _tarefas.GetById(idTarefa);
+            var tarefa = await Consultar(idTarefa);
 
-            //if (tarefa == null)
-            //    throw new KeyNotFoundException($"Tarefa com ID {idTarefa} não encontrada.");
+            tarefa.Cancelar();
 
-            //_tarefas.Delete(tarefa);
-            return Task.CompletedTask;
+            await Task.CompletedTask;
         }
 
         public async Task<Tarefa> Consultar(int idTarefa)
         {
             var tarefa = _tarefas.GetById(idTarefa);
 
-            return await Task.FromResult(tarefa) ?? throw new KeyNotFoundException($"Tarefa com ID {idTarefa} não encontrada.");
+            if (tarefa == null)
+            {
+                Debug.Fail($"Tarefa com ID {idTarefa} não encontrada.");
+            }
+
+            return await Task.FromResult(tarefa);
         }
 
         public async Task<Tarefa> Criar()
