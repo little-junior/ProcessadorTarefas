@@ -13,7 +13,7 @@ namespace ConsoleUI
         public static void ImprimirOpcoes()
         {
             Console.WriteLine("SELECIONE UMA DAS OPÇÕES ABAIXO");
-            Console.WriteLine($"\n1 -> CRIAR TAREFA\n2 -> CANCELAR TAREFA\n3 -> LISTAR TAREFAS ATIVAS\n4 -> LISTAR TAREFAS INATIVAS\n5 -> PAUSAR PROCESSAMENTO\n0 -> SAIR\n");
+            Console.WriteLine($"\n1 -> CRIAR TAREFA\n2 -> CANCELAR TAREFA\n3 -> LISTAR TAREFAS ATIVAS\n4 -> LISTAR TAREFAS INATIVAS\n5 -> LIMPAR VISUALIZAÇÃO\n6 -> PAUSAR PROCESSAMENTO\n0 -> SAIR\n");
         }
 
         public static void ImprimirTarefasEmExecucao(IGerenciadorTarefas gerenciadorTarefas)

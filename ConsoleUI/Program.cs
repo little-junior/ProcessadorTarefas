@@ -23,10 +23,7 @@ namespace ConsoleUI
 
             await processador!.Iniciar();
 
-            Action<IGerenciadorTarefas> action = (gerenciador) =>
-            {
-                return;
-            };
+            Action<IGerenciadorTarefas> action = (gerenciador) => { };
 
             while (true)
             {
@@ -42,6 +39,11 @@ namespace ConsoleUI
                             await Task.Delay(1000);
                             break;
                         case '2':
+                            Console.Write("DIGITE O ID DA TAREFA: ");
+                            var idTarefa = int.Parse(Console.ReadLine());
+                            await processador.CancelarTarefa(idTarefa);
+                            Console.WriteLine("TAREFA CANCELADA");
+                            await Task.Delay(1000);
                             break;
                         case '3':
                             action = UserInterface.ImprimirTarefasAtivas;
@@ -66,7 +68,6 @@ namespace ConsoleUI
                     }
                 }
 
-
                 Console.Clear();
 
                 UserInterface.ImprimirOpcoes();
@@ -78,13 +79,8 @@ namespace ConsoleUI
 
                 UserInterface.ImprimirTarefasEmExecucao(gerenciador!);
 
-
                 await Task.Delay(200);
-
             }
-
-
-
         }
 
         private static IServiceProvider ConfigureServiceProvider()
@@ -94,7 +90,6 @@ namespace ConsoleUI
                             .SetBasePath(Directory.GetCurrentDirectory())
                             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                             .Build();
-
 
             IServiceCollection services = new ServiceCollection();
             services.AddScoped(_ => configuration);
@@ -138,8 +133,6 @@ namespace ConsoleUI
                 Console.WriteLine($"\"{ex.Message}\"");
                 Environment.Exit(0);
             }
-
         }
-
     }
 }
