@@ -28,13 +28,19 @@ namespace ProcessadorTarefas.Servicos
 
         public async Task CancelarTarefa(int idTarefa)
         {
-            //Adicionar verificações para garantir a máquina de estado correta
-            var idVerification = cancelationTokens.TryGetValue(idTarefa, out var _);
             var tarefaACancelar = await _gerenciador.Consultar(idTarefa);
+
+            var idVerification = cancelationTokens.TryGetValue(idTarefa, out var _);
 
             if (!idVerification && tarefaACancelar == null)
             {
                 Debug.Fail("Tarefa não encontrada");
+                return;
+            }
+
+            if (!tarefaACancelar.PodeSerCancelada())
+            {
+                Debug.Fail("A tarefa não pode ser cancelada em seu estado atual.");
                 return;
             }
 
@@ -45,10 +51,7 @@ namespace ProcessadorTarefas.Servicos
             }
 
             _emExecucao.Remove(tarefaACancelar);
-            tarefaACancelar.Cancelar();
-
-
-
+            await _gerenciador.Cancelar(idTarefa);
         }
 
         public Task Encerrar()
