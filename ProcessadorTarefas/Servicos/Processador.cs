@@ -28,7 +28,27 @@ namespace ProcessadorTarefas.Servicos
 
         public async Task CancelarTarefa(int idTarefa)
         {
-            await _gerenciador.Cancelar(idTarefa);
+            //Adicionar verificações para garantir a máquina de estado correta
+            var idVerification = cancelationTokens.TryGetValue(idTarefa, out var _);
+            var tarefaACancelar = await _gerenciador.Consultar(idTarefa);
+
+            if (!idVerification && tarefaACancelar == null)
+            {
+                Debug.Fail("Tarefa não encontrada");
+                return;
+            }
+
+            if (idVerification)
+            {
+                cancelationTokens[idTarefa].Cancel();
+                cancelationTokens.Remove(idTarefa);
+            }
+
+            _emExecucao.Remove(tarefaACancelar);
+            tarefaACancelar.Cancelar();
+
+
+
         }
 
         public Task Encerrar()
@@ -88,32 +108,39 @@ namespace ProcessadorTarefas.Servicos
                 if (_emExecucao.Count < num)
                 {
                     var tarefaAExecutar = _agendadas.Dequeue();
-
-                    var cancelationSource = new CancellationTokenSource();
-                    _emExecucao.Add(tarefaAExecutar);
-
-                    cancelationTokens.Add(tarefaAExecutar.Id, cancelationSource);
-                    Task.Run(async () =>
+                    if (tarefaAExecutar.Estado == EstadoTarefa.Agendada)
                     {
-                        await ProcessarTarefa(tarefaAExecutar);
-                        _emExecucao.Remove(tarefaAExecutar);
-                    },
-                        cancelationSource.Token);
 
+                        var cancelationSource = new CancellationTokenSource();
+                        _emExecucao.Add(tarefaAExecutar);
+
+                        cancelationTokens.Add(tarefaAExecutar.Id, cancelationSource);
+                        Task.Run(async () =>
+                            {
+                                await ProcessarTarefa(tarefaAExecutar, cancelationSource.Token);
+                                _emExecucao.Remove(tarefaAExecutar);
+                            },
+                            cancelationSource.Token);
+                    }
                 }
             }
         }
 
-        private async Task ProcessarTarefa(Tarefa tarefa)
+        private async Task ProcessarTarefa(Tarefa tarefa, CancellationToken cancellationToken)
         {
             tarefa.Iniciar();
             var subtarefas = tarefa.SubtarefasPendentes;
 
             foreach (var subtarefa in subtarefas)
             {
-                await Task.Delay(subtarefa.Duracao);
-                tarefa.ConcluirSubtarefa(subtarefa);
+                await Task.Run(async () =>
+                {
+                    await Task.Delay(subtarefa.Duracao);
+                    tarefa.ConcluirSubtarefa(subtarefa);
+
+                }, cancellationToken);
             }
+
             tarefa.Concluir();
         }
 
