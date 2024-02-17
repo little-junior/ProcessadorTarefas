@@ -54,7 +54,7 @@ namespace ProcessadorTarefas.Servicos
 
         public async Task<IEnumerable<Tarefa>> ListarAtivas()
         {
-            var tarefasAtivas = _tarefas.GetAll().Where(t => t.Estado == EstadoTarefa.Agendada || t.Estado == EstadoTarefa.EmExecucao || t.Estado == EstadoTarefa.Criada);
+            var tarefasAtivas = _tarefas.GetAll().Where(t => t.Estado == EstadoTarefa.Agendada || t.Estado == EstadoTarefa.EmExecucao || t.Estado == EstadoTarefa.Criada || t.Estado == EstadoTarefa.EmPausa);
             return await Task.FromResult(tarefasAtivas);
         }
 
