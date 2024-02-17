@@ -56,7 +56,16 @@ namespace ProcessadorTarefas.Servicos
 
         public Task Encerrar()
         {
-            throw new NotImplementedException();
+            _isRunning = false;
+
+            _emExecucao.ForEach(tarefa =>
+            {
+                cancelationTokens[tarefa.Id].Cancel();
+                cancelationTokens.Remove(tarefa.Id);
+                tarefa.Pausar();
+            });
+
+            return Task.CompletedTask;
         }
 
         public Task Iniciar()
@@ -78,6 +87,10 @@ namespace ProcessadorTarefas.Servicos
                 try
                 {
                     PopularAgendadas();
+
+                    if (_emExecucao.Any(tarefa => tarefa.Estado == EstadoTarefa.EmPausa))
+                        ConsumirPausadas();
+                    
                     ConsumirAgendadas();
                 }
                 catch (Exception ex)
@@ -92,8 +105,7 @@ namespace ProcessadorTarefas.Servicos
         private async Task PopularAgendadas()
         {
             var num = 5;
-            var tarefaAtivas = await _gerenciador.ListarAtivas();
-            var quantidadeAgendadas = tarefaAtivas.Count(t => t.Estado == EstadoTarefa.Agendada);
+            var quantidadeAgendadas = _agendadas.Count;
             if (quantidadeAgendadas < num)
             {
                 var tarefaAEspera = _gerenciador.ListarAtivas().Result.First(t => t.Estado == EstadoTarefa.Criada);
@@ -129,6 +141,22 @@ namespace ProcessadorTarefas.Servicos
             }
         }
 
+        private void ConsumirPausadas()
+        {
+            //Não funcional, por algum motivo as subtarefas ficam vazias
+            var tarefaPausada = _emExecucao.First(tarefa => tarefa.Estado == EstadoTarefa.EmPausa);
+
+            var cancelationSource = new CancellationTokenSource();
+
+            cancelationTokens.Add(tarefaPausada.Id, cancelationSource);
+            Task.Run(async () =>
+            {
+                await ProcessarTarefa(tarefaPausada, cancelationSource.Token);
+                _emExecucao.Remove(tarefaPausada);
+            },
+                cancelationSource.Token);
+        }
+
         private async Task ProcessarTarefa(Tarefa tarefa, CancellationToken cancellationToken)
         {
             tarefa.Iniciar();
@@ -146,8 +174,5 @@ namespace ProcessadorTarefas.Servicos
 
             tarefa.Concluir();
         }
-
-
-
     }
 }
