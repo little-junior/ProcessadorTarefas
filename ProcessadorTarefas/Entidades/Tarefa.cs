@@ -61,7 +61,9 @@ namespace ProcessadorTarefas.Entidades
         public void Iniciar()
         {
             Estado = EstadoTarefa.EmExecucao;
-            IniciadaEm = DateTime.Now;
+
+            if(IniciadaEm == DateTime.MinValue)
+                IniciadaEm = DateTime.Now;
         }
         public void Cancelar()
         {
