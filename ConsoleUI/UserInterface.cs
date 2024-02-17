@@ -102,5 +102,34 @@ namespace ConsoleUI
             Console.Clear();
             Console.WriteLine("FECHANDO O SISTEMA...");
         }
+
+        public static void ImprimirTelaEmPausa(IGerenciadorTarefas gerenciadorTarefas)
+        {
+                Console.Clear();
+
+                Console.WriteLine("PROCESSADOR EM PAUSA\nDIGITE QUALQUER TECLA PARA VOLTAR O PROCESSAMENTO DE TAREFAS...");
+                Console.WriteLine("\nTAREFAS PAUSADAS:\n");
+
+                var tarefasEmExecucao = gerenciadorTarefas.ListarAtivas().GetAwaiter().GetResult().Where(t => t.Estado == EstadoTarefa.EmPausa).OrderBy(t => t.Id);
+
+                ImprimirColunasEmExecucao();
+                foreach (var tarefa in tarefasEmExecucao)
+                {
+                    double porcentagemConcluida = (tarefa.DuracaoPercorrida / (tarefa.DuracaoTotal)) * 100;
+
+                    var sb = new StringBuilder();
+
+                    sb.AppendLine(
+                    string.Join('|',
+                        $"{tarefa.Id}".PadRight(5, ' '),
+                        $"{porcentagemConcluida:0.0}%".PadRight(15, ' '),
+                        $"{tarefa.DuracaoTotal}".PadRight(30, ' '),
+                        $"{tarefa.IniciadaEm}".PadRight(30, ' ')
+                        )
+                    );
+
+                    Console.Write(sb);
+                }
+        }
     }
 }

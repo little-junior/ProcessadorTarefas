@@ -63,6 +63,20 @@ namespace ConsoleUI
                             action = (gerenciador) => { };
                             break;
                         case '6':
+
+                            var cancellationSource = new CancellationTokenSource();
+
+                            await processador.Encerrar();
+
+                            //Task.Run(() =>
+                            //{
+                                UserInterface.ImprimirTelaEmPausa(gerenciador);
+                            //}, cancellationSource.Token);
+
+
+                            Console.ReadKey();
+                            //cancellationSource.Cancel();
+                            await processador.Iniciar();
                             break;
                         case '0':
                             UserInterface.ImprimirTelaSaida();
