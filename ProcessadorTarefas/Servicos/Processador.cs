@@ -118,9 +118,9 @@ namespace ProcessadorTarefas.Servicos
         {
             if (_agendadas.Count != 0)
             {
-                var num = 5;
+                var maxTarefasEmExecucao = int.Parse(_configurations["maxTarefasEmExecucao"]);
 
-                if (_emExecucao.Count < num)
+                if (_emExecucao.Count < maxTarefasEmExecucao)
                 {
                     var tarefaAExecutar = _agendadas.Dequeue();
                     if (tarefaAExecutar.Estado == EstadoTarefa.Agendada)
